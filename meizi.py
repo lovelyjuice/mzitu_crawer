@@ -28,7 +28,7 @@ class Meizi(threading.Thread):
             if not response:
                 continue
             response.encoding = 'utf-8'
-            soup = BeautifulSoup(response.text, 'lxml')
+            soup = BeautifulSoup(response.text, 'html.parser')
             temp = soup.find('a', string='下一页»')
             zhuti = soup.find('div', class_='main-image')
             if zhuti:
