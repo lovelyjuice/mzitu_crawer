@@ -30,6 +30,10 @@ class Zhuanti:
             soup = BeautifulSoup(response.text, 'html.parser')
             tags_of_meizi = soup.find(name='ul', id='pins').find_all('li')
             real_list.extend(tags_of_meizi)
+            temp = soup.find('a', string='下一页»')
+            if not temp:
+                print '这个专题只有%d套图了……我尽量下完这%d套图吧' % (real_list.__len__(), real_list.__len__())
+                break
             i += 1
         for tag in real_list[0:num]:
             Meizi(tag.a['href'], root_dir, unicode(tag.span.string)).start()
@@ -50,8 +54,10 @@ if __name__ == "__main__":
     for index, a_tag in enumerate(beauties):
         print index + 1, a_tag.text
     num = int(raw_input('告诉我你要找的专题序号：'))
-    url = beauties[num - 1]['href']
-    if 'url' not in locals().keys():
-        exit('没有找到你要找的专题')
+    try:
+        url = beauties[num - 1]['href']
+    except:
+        print '(滑稽）'
+        exit('出错了，是不是序号输入有误？')
     zt = Zhuanti(url)
     zt.start()

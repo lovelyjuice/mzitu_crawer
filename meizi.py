@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 class Meizi(threading.Thread):
     def __init__(self, url, root_dir, model_name):
         threading.Thread.__init__(self)
-        self.root_dir = root_dir
+        self.root_dir = root_dir.decode('utf-8')
         self.model_name = model_name
         self.baseurl = url
         self.headers = {
@@ -36,21 +36,13 @@ class Meizi(threading.Thread):
                     self.download_pic(zhuti.p.a.img['src'], self.root_dir + self.model_name, i)
                 except requests.exceptions.ConnectionError, e:
                     print e
-        print '下载完一个妹子啦！！！'
+        print '抓了一个妹子(๑•̀ㅂ•́)و✧  还剩%d个' % (threading.activeCount() - 2)
 
     def download_pic(self, url, directory, count):
         split = '\\' if platform.system() == 'windows' else '/'
         final_path = directory + split + str(count) + '.jpg'
-        again = 0
-        while again < 3:
-            try:
-                response = requests.get(url, headers=self.headers)
-                if again != 0:
-                    print "重新下载图片成功！"
-                break
-            except requests.exceptions.ConnectionError, e:
-                again += 1
-                print "第%d次重新下载图片" % again
+        myfunc = self.decorator(requests.get, 3)
+        response = myfunc(url, headers=self.headers)
         with open(final_path, 'wb+') as f:
             f.write(response.content)
 
@@ -66,6 +58,8 @@ class Meizi(threading.Thread):
                     break
                 except requests.exceptions.ConnectionError, e:
                     again += 1
+                    if again == 1:
+                        print '网络似乎有点问题，开始重连...'
                     print "尝试进行第%d次重新连接" % again
             if again == times:
                 print 'Sorry...重连失败，将跳过该图片'
