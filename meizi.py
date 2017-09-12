@@ -33,16 +33,19 @@ class Meizi(threading.Thread):
             zhuti = soup.find('div', class_='main-image')
             if zhuti:
                 try:
-                    self.download_pic(zhuti.p.a.img['src'], self.root_dir + self.model_name, i)
+                    self.download_pic(zhuti.p.a.img['src'], self.root_dir + self.model_name, i,
+                                      self.baseurl + '/' + str(i))
                 except requests.exceptions.ConnectionError, e:
                     print e
         print '抓了一个妹子(๑•̀ㅂ•́)و✧  还剩%d个' % (threading.activeCount() - 2)
 
-    def download_pic(self, url, directory, count):
+    def download_pic(self, url, directory, count, referer):
         split = '\\' if platform.system() == 'windows' else '/'
         final_path = directory + split + str(count) + '.jpg'
         myfunc = self.decorator(requests.get, 3)
-        response = myfunc(url, headers=self.headers)
+        headers_with_refer = self.headers.copy()
+        headers_with_refer['Referer'] = referer
+        response = myfunc(url, headers=headers_with_refer)
         with open(final_path, 'wb+') as f:
             f.write(response.content)
 

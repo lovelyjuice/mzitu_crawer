@@ -16,7 +16,8 @@ class Zhuanti:
 
     def start(self):
         headers = {
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
+            'refer': ''}
         real_list = []
         num = int(raw_input("要爬多少个呢？"))
         root_dir = raw_input('输入保存位置：')
